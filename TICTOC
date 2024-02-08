@@ -1,0 +1,101 @@
+package subjava;
+//Here's a simple example of a text-based Tic-Tac-Toe game in Java
+
+import java.util.Scanner;
+
+public class Tictoc{
+ public static void main(String[] args) {
+     char[][] board = {
+         {' ', ' ', ' '},
+         {' ', ' ', ' '},
+         {' ', ' ', ' '}
+     };
+     boolean player1Turn = true;
+     boolean gameWon = false;
+
+     while (!gameWon) {
+         displayBoard(board);
+
+         int[] move = getPlayerMove();
+         int row = move[0];
+         int col = move[1];
+
+         if (isValidMove(board, row, col)) {
+             char mark = (player1Turn) ? 'X' : 'O';
+             board[row][col] = mark;
+
+             if (checkForWin(board, mark)) {
+                 gameWon = true;
+                 displayBoard(board);
+                 System.out.println("Player " + (player1Turn ? "1" : "2") + " wins!");
+             } else if (isBoardFull(board)) {
+                 gameWon = true;
+                 displayBoard(board);
+                 System.out.println("It's a draw!");
+             } else {
+                 player1Turn = !player1Turn;
+             }
+         } else {
+             System.out.println("Invalid move. Please try again.");
+         }
+     }
+ }
+
+ private static void displayBoard(char[][] board) {
+     for (int i = 0; i < 3; i++) {
+         for (int j = 0; j < 3; j++) {
+             System.out.print(board[i][j]);
+             if (j < 2) {
+                 System.out.print("|");
+             }
+         }
+         System.out.println();
+         if (i < 2) {
+             System.out.println("-----");
+         }
+     }
+ }
+
+ private static int[] getPlayerMove() {
+     Scanner scanner = new Scanner(System.in);
+     System.out.print("Enter row (0-2) and column (0-2) separated by a space: ");
+     int row = scanner.nextInt();
+     int col = scanner.nextInt();
+     return new int[]{row, col};
+ }
+
+ private static boolean isValidMove(char[][] board, int row, int col) {
+     return row >= 0 && row < 3 && col >= 0 && col < 3 && board[row][col] == ' ';
+ }
+
+ private static boolean checkForWin(char[][] board, char mark) {
+     // Check rows, columns, and diagonals for a win
+     for (int i = 0; i < 3; i++) {
+         if (board[i][0] == mark && board[i][1] == mark && board[i][2] == mark) {
+             return true; // row win
+         }
+         if (board[0][i] == mark && board[1][i] == mark && board[2][i] == mark) {
+             return true; // column win
+         }
+     }
+     if (board[0][0] == mark && board[1][1] == mark && board[2][2] == mark) {
+         return true; // diagonal win
+     }
+     if (board[0][2] == mark && board[1][1] == mark && board[2][0] == mark) {
+         return true; // diagonal win
+     }
+     return false;
+ }
+
+ private static boolean isBoardFull(char[][] board) {
+     // Check if the board is full
+     for (int i = 0; i < 3; i++) {
+         for (int j = 0; j < 3; j++) {
+             if (board[i][j] == ' ') {
+                 return false; // board is not full
+             }
+         }
+     }
+     return true; // board is full
+ }
+}
