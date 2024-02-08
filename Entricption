@@ -1,0 +1,38 @@
+package subjava;
+	import java.io.*;
+
+	public class EncrptionDecrption {
+	    public static void main(String[] args) {
+	        String inputFile = "input.txt";// we have to give me our path file
+	        String encryptedFile = "encrypted.txt";
+	        String decryptedFile = "decrypted.txt";
+	        int key = 3; // You can prompt the user to input the key
+
+	        // Encrypt the file
+	        encryptFile(inputFile, encryptedFile, key);
+
+	        // Decrypt the file
+	        decryptFile(encryptedFile, decryptedFile, key);
+	    }
+
+	    public static void encryptFile(String inputFile, String outputFile, int key) {
+	        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+	             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+	            int ch;
+	            while ((ch = reader.read()) != -1) {
+	                if (Character.isLetter(ch)) {
+	                    ch = (ch + key - 'A') % 26 + 'A'; // For uppercase letters
+	                } else if (Character.isLowerCase(ch)) {
+	                    ch = (ch + key - 'a') % 26 + 'a'; // For lowercase letters
+	                }
+	                writer.write(ch);
+	            }
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    public static void decryptFile(String inputFile, String outputFile, int key) {
+	        encryptFile(inputFile, outputFile, 26 - key); // Decryption is just encryption with the inverse key
+	    }
+	}
