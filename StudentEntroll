@@ -1,0 +1,100 @@
+package subjava;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class StudentEntroll {
+    private Map<Integer, Map<String, Object>> students;
+
+    public StudentEntroll() {
+        this.students = new HashMap<>();
+    }
+
+    public void addStudent(int rollNumber, String name, Map<String, Integer> marks) {
+        if (!students.containsKey(rollNumber)) {
+            Map<String, Object> studentInfo = new HashMap<>();
+            studentInfo.put("name", name);
+            studentInfo.put("marks", marks);
+            students.put(rollNumber, studentInfo);
+            System.out.println("Student " + name + " with roll number " + rollNumber + " added successfully.");
+        } else {
+            System.out.println("Student with roll number " + rollNumber + " already exists. Use update option to modify.");
+        }
+    }
+
+    public void updateStudent(int rollNumber, String name, Map<String, Integer> marks) {
+        if (students.containsKey(rollNumber)) {
+            Map<String, Object> studentInfo = students.get(rollNumber);
+            if (name != null) {
+                studentInfo.put("name", name);
+            }
+            if (marks != null) {
+                studentInfo.put("marks", marks);
+            }
+            System.out.println("Student with roll number " + rollNumber + " updated successfully.");
+        } else {
+            System.out.println("Student with roll number " + rollNumber + " not found. Use add option to add a new student.");
+        }
+    }
+
+    public void deleteStudent(int rollNumber) {
+        if (students.containsKey(rollNumber)) {
+            students.remove(rollNumber);
+            System.out.println("Student with roll number " + rollNumber + " deleted successfully.");
+        } else {
+            System.out.println("Student with roll number " + rollNumber + " not found.");
+        }
+    }
+
+    public double calculatePercentage(Map<String, Integer> marks) {
+        double totalMarks = marks.values().stream().mapToInt(Integer::intValue).sum();
+        return (totalMarks / (marks.size() * 100)) * 100;
+    }
+
+    public char calculateGrade(double percentage) {
+        if (percentage >= 90) {
+            return 'A';
+        } else if (percentage >= 80) {
+            return 'B';
+        } else if (percentage >= 70) {
+            return 'C';
+        } else if (percentage >= 60) {
+            return 'D';
+        } else {
+            return 'F';
+        }
+    }
+
+    public void displayStudents() {
+        System.out.println("\nStudent Information:");
+        for (Map.Entry<Integer, Map<String, Object>> entry : students.entrySet()) {
+            int rollNumber = entry.getKey();
+            Map<String, Object> info = entry.getValue();
+            String name = (String) info.get("name");
+            Map<String, Integer> marks = (Map<String, Integer>) info.get("marks");
+            double percentage = calculatePercentage(marks);
+            char grade = calculateGrade(percentage);
+
+            System.out.println("Roll Number: " + rollNumber);
+            System.out.println("Name: " + name);
+            System.out.println("Marks: " + marks);
+            System.out.println("Percentage: " + String.format("%.2f", percentage) + "%");
+            System.out.println("Grade: " + grade + "\n");
+        }
+    }
+
+    public static void main(String[] args) {
+    	StudentEntroll sgms = new StudentEntroll();
+
+        sgms.addStudent(101, "John Doe", Map.of("Math", 90, "Science", 85, "English", 78));
+        sgms.addStudent(102, "Jane Smith", Map.of("Math", 78, "Science", 92, "English", 88));
+
+        sgms.displayStudents();
+
+        sgms.updateStudent(101, "John Smith", null);
+        sgms.displayStudents();
+
+        sgms.deleteStudent(102);
+        sgms.displayStudents();
+    }
+}
